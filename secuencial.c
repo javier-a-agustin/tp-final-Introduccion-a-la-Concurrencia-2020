@@ -6,7 +6,7 @@
 #include <math.h>
 
 // Cantidad de cuerpos
-#define N 10
+#define N 5
 
 // Valor de gravedad
 #define G (6.67e-11)
@@ -19,26 +19,41 @@ struct Position {
     double y;
 };  
 
-struct Position p[N];       // La posicion esta compuesta del eje x y del eje y por eso es un arreglo de struct
-struct Position v[N];
-struct Position f[N];
-double m[N];            // posicion, velocidad, fuerza y masa para los cuerpos
+struct Position p[N+1];       // La posicion esta compuesta del eje x y del eje y por eso es un arreglo de struct
+struct Position v[N+1];
+struct Position f[N+1];
+double m[N+1];            // posicion, velocidad, fuerza y masa para los cuerpos
 
 
 void inicializar_cuerpos() {
     // Inicializacion de los cuerpos con valores random
-    for (int i = 0; i < N; i++) {
 
-        double x = rand() % 20; 
-        double y = rand() % 20; 
+    srand48(time(NULL));   // Para que los valores random varien en cada ejecucion
+    //srand(time(NULL));
 
-        double velocityx = rand() % 100;
+    for (int i = 1; i <= N; i++) {  // Limites modificados
+
+        long double x = rand() % 20;             // Puede que sea una posicion muy baja
+        long double y = rand() % 20; 
+
+        printf("TEST: x = %.2f ; y = %.2f \n", x, y);
+
+        double velocityx = rand() % 100;    // Puede que 100 sea una velocidad muy baja
         double velocityy = rand() % 100; 
 
-        double forcex = rand() % 100; 
-        double forcey = rand() % 100; 
+        //double forcex = rand() % 100;         // Si le damos fuerzas random lanza -nan
+        //double forcey = rand() % 100; 
 
-        double mass = rand() % 40; 
+        //double mass = rand() % 10000;         // Estos valores son muy chicos para la masa de un cuerpo
+
+        double decimal = drand48() * (9.0 - 1.0) + 1.0;
+        double exp = rand() % (28-22+1) + 22; // No se por que me da 0
+
+        double mass = decimal * pow (10, exp);      // La masa de Marte es 6,4 * 10^23
+
+        printf("TEST: Decimal aleatorio es igual a %f \n", decimal); // Calculo el 6,4 de Marte
+        printf("TEST: Exponente aleatorio es igual a %d \n", exp);   // Calculo el 23 de Marte   
+        printf("TEST: Masa aleatoria es igual a %f \n", mass);       // Calculo el valor de la masa
 
         p[i].x = x;
         p[i].y = y;
@@ -46,10 +61,8 @@ void inicializar_cuerpos() {
         v[i].x = velocityx;
         v[i].y = velocityy;
 
-
-        f[i].x = forcex;
-        f[i].y = forcey;
-
+        //f[i].x = forcex;
+        //f[i].y = forcey;
 
         m[i] = mass;
 
@@ -64,9 +77,9 @@ void calcular_fuerzas() {
     double magnitude;
     struct Position direction;
 
-    for (int i = 0; i < N; i++) {
+    for (int i = 1; i <= N-1; i++) { // Limites modificados
         
-        for(int j = i + 1; j < N; j++) {
+        for(int j = i + 1; j <= N; j++) {   // Limites modificados
             distance = sqrt(
                 pow( p[i].x - p[j].x, 2 ) +
                 pow( p[i].y - p[j].y, 2 )
@@ -94,7 +107,7 @@ void mover_cuerpos() {
     struct Position deltav;     // dv = f/m * DT
     struct Position deltap;     // dp = (v + dv/2) * DT
 
-    for (int i = 0; i < N; i++) {
+    for (int i = 1; i <= N; i++) {
 
         deltav.x = (f[i].x/m[i]) * DT;
         deltav.y = (f[i].y/m[i]) * DT;
@@ -108,9 +121,12 @@ void mover_cuerpos() {
         p[i].x = p[i].x + deltap.x;
         p[i].y = p[i].y + deltap.y;
 
-        f[i].x = f[i].y = 0.0; // resetea el vector fuerza porque? nose 
+        //f[i].x = f[i].y = 0.0; // resetea el vector fuerza porque? nose 
 
-        printf("Nueva posicion del cuerpo %d = x: %.2f | y: %.2f\n", i, p[i].x, p[i].y);
+        f[i].x = 0.0;   // Lo mismo que arriba
+        f[i].y = 0.0;
+
+        printf("[CUERPO %d] x: %.2f | y: %.2f \n", i, p[i].x, p[i].y);
     }
 
 }
@@ -137,17 +153,18 @@ int main(int argc, char*argv[]){
 
     for (int i = 0; i < cant_iteraciones; i++) {
         // printf("Calculo de fuerza de iteracion %d\n", i);
-        calcular_fuerzas();
+        printf("\n--- ITERACIÓN NRO. %d --- \n", i+1);
 
+        //mover_cuerpos();
+        calcular_fuerzas();
+        mover_cuerpos();
     }
 
-    for (int i = 0; i < cant_iteraciones; i++) {
-        // printf("Movimiento de cuerpos de iteracion %d\n", i);
+    /* for (int i = 0; i < cant_iteraciones; i++) {
+        printf("\n--- ITERACIÓN NRO. %d --- \n", i+1);
         mover_cuerpos();
 
-    }
-    
+    }*/
 
     return 0;
-
 }
