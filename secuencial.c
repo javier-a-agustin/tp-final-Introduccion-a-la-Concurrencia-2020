@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h> 
 
 // Cantidad de cuerpos
 #define N 5
@@ -141,6 +142,9 @@ int main(int argc, char*argv[]){
         }
     */
 
+
+    clock_t inicio = clock();
+
     int cant_iteraciones = atoi(argv[1]);      // Cantidad de iteraciones | Valor de entrada
 
     // if (cant_iteraciones % 2 != 0) {
@@ -166,5 +170,10 @@ int main(int argc, char*argv[]){
 
     }*/
 
+    clock_t fin = clock();
+    double time_spent = 0.0;
+    time_spent += (double)(fin - inicio) / CLOCKS_PER_SEC;
+ 
+    printf("Tiempo %f", time_spent);
     return 0;
 }
