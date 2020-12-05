@@ -13,6 +13,7 @@
 
 // Valor de delta time. Representa 1 segundo
 #define DT 1
+#define LEN 256
 
 struct Position {
     double x;
@@ -25,6 +26,13 @@ struct Position f[N+1];
 double m[N+1];            // posicion, velocidad, fuerza y masa para los cuerpos
 
 
+
+// FILE * fp;
+
+/* open the file for writing*/
+FILE *fp;
+
+
 void inicializar_cuerpos() {
     // Inicializacion de los cuerpos con valores random
 
@@ -33,8 +41,8 @@ void inicializar_cuerpos() {
 
     for (int i = 1; i <= N; i++) {  // Limites modificados
 
-        long double x = rand() % 20;             // Puede que sea una posicion muy baja
-        long double y = rand() % 20; 
+        long double x = rand() % 500;             // Puede que sea una posicion muy baja
+        long double y = rand() % 500; 
 
         printf("TEST: x = %.2f ; y = %.2f \n", x, y);
 
@@ -44,16 +52,16 @@ void inicializar_cuerpos() {
         //double forcex = rand() % 100;         // Si le damos fuerzas random lanza -nan
         //double forcey = rand() % 100; 
 
-        //double mass = rand() % 10000;         // Estos valores son muy chicos para la masa de un cuerpo
+        // double mass = rand() % 10000;         // Estos valores son muy chicos para la masa de un cuerpo
 
         double decimal = drand48() * (9.0 - 1.0) + 1.0;
         double exp = rand() % (28-22+1) + 22; // No se por que me da 0
 
         double mass = decimal * pow (10, exp);      // La masa de Marte es 6,4 * 10^23
 
-        printf("TEST: Decimal aleatorio es igual a %f \n", decimal); // Calculo el 6,4 de Marte
-        printf("TEST: Exponente aleatorio es igual a %d \n", exp);   // Calculo el 23 de Marte   
-        printf("TEST: Masa aleatoria es igual a %f \n", mass);       // Calculo el valor de la masa
+        // printf("TEST: Decimal aleatorio es igual a %f \n", decimal); // Calculo el 6,4 de Marte
+        // printf("TEST: Exponente aleatorio es igual a %d \n", exp);   // Calculo el 23 de Marte   
+        // printf("TEST: Masa aleatoria es igual a %f \n", mass);       // Calculo el valor de la masa
 
         p[i].x = x;
         p[i].y = y;
@@ -123,9 +131,12 @@ void mover_cuerpos() {
 
         //f[i].x = f[i].y = 0.0; // resetea el vector fuerza porque? nose 
 
+        
+        // fprintf(fp, "[CUERPO %d] x: %.2f | y: %.2f \n", i, p[i].x, p[i].y, i+1);
+
+        fprintf(fp, "{\"masa\": %.2f, \"x\": %.2f, \"y\": %.2f, \"vx\": %.2f, \"vy\": %.2f, \"fx\": %.2f, \"fy\": %.2f,},\n", m[i], p[i].x, p[i].y, v[i].x, v[i].y, f[i].x, f[i].y);
         f[i].x = 0.0;   // Lo mismo que arriba
         f[i].y = 0.0;
-
         printf("[CUERPO %d] x: %.2f | y: %.2f \n", i, p[i].x, p[i].y);
     }
 
@@ -143,22 +154,43 @@ int main(int argc, char*argv[]){
 
     int cant_iteraciones = atoi(argv[1]);      // Cantidad de iteraciones | Valor de entrada
 
-    // if (cant_iteraciones % 2 != 0) {
-    // No aplica porque no depende de la cantidad de iteraciones
-    //     printf("Entrada incorrecta: Cantidad_Iteraciones debe ser entero\n");
-    //     return 0;
-    // }
 
     inicializar_cuerpos();
 
+
+
+/*
+    FILE * fp;
+   int i;
+   fp = fopen ("c:\\temp\\1.txt","w");
+ 
+   for(i = 0; i < 10;i++){
+       fprintf (fp, "This is line %d\n",i + 1);
+   }
+ 
+   fclose (fp);
+*/
+
+
+    
+    fp =  fopen("./data.json","w");
+    fprintf(fp, "\n[\n");
+
+
     for (int i = 0; i < cant_iteraciones; i++) {
         // printf("Calculo de fuerza de iteracion %d\n", i);
+        fprintf(fp, "\n[\n");
         printf("\n--- ITERACIÓN NRO. %d --- \n", i+1);
 
         //mover_cuerpos();
         calcular_fuerzas();
         mover_cuerpos();
+        fprintf(fp, "\n],\n");
+
     }
+    fprintf(fp, "\n]\n");
+
+    fclose(fp);
 
     /* for (int i = 0; i < cant_iteraciones; i++) {
         printf("\n--- ITERACIÓN NRO. %d --- \n", i+1);
