@@ -6,9 +6,6 @@
 #include <math.h>
 #include <time.h> 
 
-// Cantidad de cuerpos
-#define N 3
-
 // Valor de gravedad
 #define G (6.67e-11)
 
@@ -20,17 +17,12 @@ struct Position {
     double y;
 };  
 
-struct Position p[N+1];       // La posicion esta compuesta del eje x y del eje y por eso es un arreglo de struct
-struct Position v[N+1];
-struct Position f[N+1];
-double m[N+1];            // posicion, velocidad, fuerza y masa para los cuerpos
-
-void inicializar_cuerpos() {
+void inicializar_cuerpos(struct Position p[], struct Position v[], struct Position f[], double m[], int size) {
     // Inicializacion de los cuerpos con valores random
 
     //srand(time(NULL));  Para que siempre se generen los mismos valores, esto tiene que estar comentado
 
-    for (int i = 1; i <= N; i++) {  // Limites modificados
+    for (int i = 1; i <= size; i++) {       // Limites modificados
 
         double x = drand48() * 1000;            
         double y = drand48() * 1000; 
@@ -55,16 +47,17 @@ void inicializar_cuerpos() {
     }
 }
 
-void calcular_fuerzas() {
+
+void calcular_fuerzas(struct Position p[], struct Position f[], double m[], int size) {
 // Calcula las fuerzas para cada uno de los cuerpos
 
     double distance;
     double magnitude;
     struct Position direction;
 
-    for (int i = 1; i <= N-1; i++) {        // Limites modificados
+    for (int i = 1; i <= size-1; i++) {        // Limites modificados
         
-        for(int j = i + 1; j <= N; j++) {   // Limites modificados
+        for(int j = i + 1; j <= size; j++) {   // Limites modificados
             distance = sqrt(
                 pow( p[i].x - p[j].x, 2 ) +
                 pow( p[i].y - p[j].y, 2 )
@@ -84,12 +77,12 @@ void calcular_fuerzas() {
     }
 }
 
-void mover_cuerpos() {
+void mover_cuerpos(struct Position p[], struct Position v[], struct Position f[], double m[], int size) {
 // Mueve cada uno de los cuerpos
     struct Position deltav;     // dv = f/m * DT
     struct Position deltap;     // dp = (v + dv/2) * DT
 
-    for (int i = 1; i <= N; i++) {
+    for (int i = 1; i <= size; i++) {
 
         deltav.x = (f[i].x/m[i]) * DT;
         deltav.y = (f[i].y/m[i]) * DT;
@@ -111,6 +104,7 @@ void mover_cuerpos() {
 
 }
 
+
 int main(int argc, char*argv[]){
 
     int cant_iteraciones, cant_cuerpos;
@@ -120,21 +114,26 @@ int main(int argc, char*argv[]){
     if (argc == 3){
         cant_cuerpos = atoi(argv[1]);          // Cantidad de cuerpos (deberia reemplazar a la constante N)
         cant_iteraciones = atoi(argv[2]);      // Cantidad de iteraciones | Valor de entrada
+        printf("Cantidad cuerpos: %d", cant_cuerpos);
     } else {
         printf("Para ejecutar el programa, debe ingresar la cantidad de cuerpos e iteraciones. \n");
         return 0;
     }
     
     //generar_estructuras();        Deberiamos tener un metodo que defina las estrucuras con cant_cuerpos
+    struct Position p[cant_cuerpos+1];       // La posicion esta compuesta del eje x y del eje y por eso es un arreglo de struct
+    struct Position v[cant_cuerpos+1];
+    struct Position f[cant_cuerpos+1];
+    double m[cant_cuerpos+1];
 
-    inicializar_cuerpos();
+    inicializar_cuerpos(p, v, f, m, cant_cuerpos);
 
     for (int i = 0; i < cant_iteraciones; i++) {
 
         printf("\n--- ITERACIÓN NRO. %d --- \n", i+1);
 
-        calcular_fuerzas();
-        mover_cuerpos();
+        calcular_fuerzas(p, f, m, cant_cuerpos);
+        mover_cuerpos(p, v , f, m, cant_cuerpos);
     }
 
     clock_t fin = clock();
