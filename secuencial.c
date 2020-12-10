@@ -41,8 +41,8 @@ void inicializar_cuerpos() {
 
     for (int i = 1; i <= N; i++) {  // Limites modificados
 
-        long double x = rand() % 500;             // Puede que sea una posicion muy baja
-        long double y = rand() % 500; 
+        long double x = rand() % 100;             // Puede que sea una posicion muy baja
+        long double y = rand() % 100; 
 
         printf("TEST: x = %.2f ; y = %.2f \n", x, y);
 
@@ -52,12 +52,12 @@ void inicializar_cuerpos() {
         //double forcex = rand() % 100;         // Si le damos fuerzas random lanza -nan
         //double forcey = rand() % 100; 
 
-        // double mass = rand() % 10000;         // Estos valores son muy chicos para la masa de un cuerpo
+        double mass = rand() % 100000;         // Estos valores son muy chicos para la masa de un cuerpo
 
-        double decimal = drand48() * (9.0 - 1.0) + 1.0;
-        double exp = rand() % (28-22+1) + 22; // No se por que me da 0
+        // double decimal = drand48() * (9.0 - 1.0) + 1.0;
+        // double exp = rand() % (28-22+1) + 22; // No se por que me da 0
 
-        double mass = decimal * pow (10, exp);      // La masa de Marte es 6,4 * 10^23
+        // double mass = decimal * pow (10, exp);      // La masa de Marte es 6,4 * 10^23
 
         // printf("TEST: Decimal aleatorio es igual a %f \n", decimal); // Calculo el 6,4 de Marte
         // printf("TEST: Exponente aleatorio es igual a %d \n", exp);   // Calculo el 23 de Marte   
@@ -145,7 +145,6 @@ void mover_cuerpos() {
 int main(int argc, char*argv[]){
     /*
         initialize bodies;
-
         for [time = start to finish by DT] {
             calculate forces;
             move bodies;
@@ -195,7 +194,6 @@ int main(int argc, char*argv[]){
     /* for (int i = 0; i < cant_iteraciones; i++) {
         printf("\n--- ITERACIÓN NRO. %d --- \n", i+1);
         mover_cuerpos();
-
     }*/
 
     return 0;

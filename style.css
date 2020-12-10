@@ -1,4 +1,28 @@
 body {
     background-color: #222831;
     color: #f1f1f1;
+    padding-top: 50px;
+}
+
+img {
+    width: 80%;
+    align-self: center;
+    margin: 20px;
+}
+
+#buttons-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 20px;
+}
+
+#buttons-container button {
+    width: 130px;
+    margin: 4px;
+}
+
+#tester {
+    width: 100%;
+    margin-bottom: 50px;
 }
